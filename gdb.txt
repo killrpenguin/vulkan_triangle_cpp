@@ -1,0 +1,379 @@
+Reading symbols from ./build/main/main...
++break check_validation_layer_support
+Breakpoint 1 at 0x4390: file /home/david/Programming/cpp_dev/VkTriangle/src/Instance.cpp, line 55.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 105885)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Instance::check_validation_layer_support (this=0x7fffffffd8c0) at /home/david/Programming/cpp_dev/VkTriangle/src/Instance.cpp:55
+warning: Source file is more recent than executable.
++print *this
+$1 = {
+  inner = 0x5555555703a0
+}
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++print available_layers
+$2 = std::vector of length 16, capacity 16 = {{
+    layerName = "VK_LAYER_RENDERDOC_Capture", '\000' <repeats 229 times>,
+    specVersion = 4206723,
+    implementationVersion = 32,
+    description = "Debugging capture layer for RenderDoc", '\000' <repeats 218 times>
+  }, {
+    layerName = "VK_LAYER_VALVE_steam_overlay_32", '\000' <repeats 224 times>,
+    specVersion = 4206799,
+    implementationVersion = 1,
+    description = "Steam Overlay Layer", '\000' <repeats 236 times>
+  }, {
+    layerName = "VK_LAYER_VALVE_steam_overlay_64", '\000' <repeats 224 times>,
+    specVersion = 4206799,
+    implementationVersion = 1,
+    description = "Steam Overlay Layer", '\000' <repeats 236 times>
+  }, {
+    layerName = "VK_LAYER_VALVE_steam_fossilize_32", '\000' <repeats 222 times>,
+    specVersion = 4206799,
+Quit
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++print layer_found
+$3 = true
++n
++n
++n
++n
++n
+MyVk::Instance::Instance (this=0x7fffffffd8c0) at /home/david/Programming/cpp_dev/VkTriangle/src/Instance.cpp:49
+Reading symbols from ./build/main/main...
++break check_validation_layer_support
+Breakpoint 1 at 0x4390: file /home/david/Programming/cpp_dev/VkTriangle/src/Instance.cpp, line 55.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 106055)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Instance::check_validation_layer_support (this=0x7fffffffd8c0) at /home/david/Programming/cpp_dev/VkTriangle/src/Instance.cpp:55
+warning: Source file is more recent than executable.
++print enable_validation_layers
+No symbol "enable_validation_layers" in current context.
++exit
+Reading symbols from ./build/main/main...
++break setup_debug_messenger
+Breakpoint 1 at 0x4989: file /home/david/Programming/cpp_dev/VkTriangle/src/Instance.cpp, line 93.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+
+Breakpoint 1, MyVk::ValidationLayers::setup_debug_messenger (this=0x7fffffffd8b8, instance=@0x7fffffffd8c0: 0x0) at /home/david/Programming/cpp_dev/VkTriangle/src/Instance.cpp:93
++n
++print enable_validation_layers
+No symbol "enable_validation_layers" in current context.
++print instance
+$1 = (VkInstance &) @0x7fffffffd8c0: 0x0
++exit
+Reading symbols from ./build/main/main...
++break run
+Breakpoint 1 at 0x42a8: file /home/david/Programming/cpp_dev/VkTriangle/src/Application.cpp, line 11.
++start
+Temporary breakpoint 2 at 0x32a7: file /home/david/Programming/cpp_dev/VkTriangle/main/main.cpp, line 12.
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+
+Temporary breakpoint 2, main () at /home/david/Programming/cpp_dev/VkTriangle/main/main.cpp:12
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 13504)]
+[Thread 0x7fffea1ff6c0 (LWP 13504) exited]
+[Inferior 1 (process 13503) exited with code 01]
++n
+The program is not being run.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 13508)]
+[Thread 0x7fffea1ff6c0 (LWP 13508) exited]
+[Inferior 1 (process 13507) exited with code 01]
++start
+Temporary breakpoint 3 at 0x5555555572a7: file /home/david/Programming/cpp_dev/VkTriangle/main/main.cpp, line 12.
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+
+Temporary breakpoint 3, main () at /home/david/Programming/cpp_dev/VkTriangle/main/main.cpp:12
++n
+[New Thread 0x7fffea1ff6c0 (LWP 13511)]
+[Thread 0x7fffea1ff6c0 (LWP 13511) exited]
+[Inferior 1 (process 13509) exited with code 01]
++exit
+Reading symbols from ./build/main/main...
++break pick_phyisical_dev
+Function "pick_phyisical_dev" not defined.
++break pick_physical_dev
+Breakpoint 1 at 0x671b: file /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp, line 8.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 13574)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::pick_physical_dev (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:8
++n
++n
++n
++n
++print devices
+$1 = std::vector of length 1, capacity 1 = {0x0}
++devices[0]
+Undefined command: "devices".  Try "help".
++print devices[0]
+$2 = (VkPhysicalDevice_T *) 0x0
++n
++n
++print suitable_dev 
+$3 = 0x0
++devices.data()
+Undefined command: "devices.data".  Try "help".
++print devices.data()
+$4 = (VkPhysicalDevice_T **) 0x555555750b00
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 13577)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::pick_physical_dev (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:8
++n
++n
++n
++n
++s
+std::vector<VkPhysicalDevice_T*, std::allocator<VkPhysicalDevice_T*> >::data (this=0x7fffffffd7b8) at /usr/lib/gcc/x86_64-pc-linux-gnu/14/include/g++-v14/bits/stl_vector.h:1263
++n
+MyVk::Application::pick_physical_dev (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:19
++s
+std::vector<VkPhysicalDevice_T*, std::allocator<VkPhysicalDevice_T*> >::begin (this=0x7fffffffd7b8) at /usr/lib/gcc/x86_64-pc-linux-gnu/14/include/g++-v14/bits/stl_vector.h:874
++s
+__gnu_cxx::__normal_iterator<VkPhysicalDevice_T**, std::vector<VkPhysicalDevice_T*, std::allocator<VkPhysicalDevice_T*> > >::__normal_iterator (this=0x7fffffffd700, __i=@0x7fffffffd7b8: 0x555555750b00) at /usr/lib/gcc/x86_64-pc-linux-gnu/14/include/g++-v14/bits/stl_iterator.h:1068
++n
+MyVk::Application::pick_physical_dev (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:32
++print devices
+$5 = std::vector of length 1, capacity 1 = {0x55555575fbc0}
++exit
+Reading symbols from ./build/main/main...
++break pick_physical_dev
+Breakpoint 1 at 0x671b: file /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp, line 8.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 13795)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::pick_physical_dev (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:8
++n
++n
++n
++n
++n
++n
++n
++n
++print *this.physical_device
+$1 = <incomplete type>
++print phyiscal_device
+No symbol "phyiscal_device" in current context.
++n
+MyVk::Application::init_vulkan (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/Application.cpp:53
++print *this
+$2 = {
+  window = {
+    win = 0x0,
+    width = 800,
+    height = 600
+  },
+  instance = 0x5555555cb980,
+  layers = {
+    debug_messenger = 0xfd5b260000000001
+  },
+  physical_device = 0x55555575fbc0
+}
++n
+MyVk::Application::Application (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/../include/Vk/Application.hpp:38
++n
+main () at /home/david/Programming/cpp_dev/VkTriangle/main/main.cpp:13
++s
+MyVk::Application::run (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/Application.cpp:11
++n
+warning: Error detected on fd 0
+error detected on stdin
+Reading symbols from ./build/main/main...
++break find_queue_families
+Breakpoint 1 at 0x6cef: file /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp, line 72.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 11239)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::find_queue_families<(VkQueueFlagBits)1> (this=0x7fffffffd8a0) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:72
++3;9un
+Undefined command: "3".  Try "help".
++n
++print indices
+$1 = std::optional [no contained value]
++n
++n
++n
++n
++n
++n
++n
++n
++print indicies
+No symbol "indicies" in current context.
++print indices
+$2 = std::optional = {
+  [contained value] = 0
+}
++n
++exit
+Reading symbols from ./build/main/main...
++break find_device
+Breakpoint 1 at 0x6b73: file /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp, line 42.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 14382)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::find_device (devices=std::vector of length 1, capacity 1 = {...}) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:42
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++n
++print *candidates.rbegin()->second
+$1 = <incomplete type>
++print candidates.rbegin()->
+A syntax error in expression, near the end of `candidates.rbegin()->'.
++print candidates.rbegin()->second
+$2 = (VkPhysicalDevice_T *) 0x555555762bc0
++n
++n
+MyVk::Application::new_physical_dev (this=0x7fffffffd888) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:24
+Reading symbols from ./build/main/main...
++break new_logical_device
+Breakpoint 1 at 0x6e81: file /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp, line 104.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 14719)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::new_logical_device (this=0x7fffffffd888) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:104
++print graphics_indices
+$1 = 3
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 14892)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::new_logical_device (this=0x7fffffffd888) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:104
++exit
+Reading symbols from ./build/main/main...
++break find_queue_families
+Breakpoint 1 at 0x707f: file /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp, line 78.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 14919)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::find_queue_families<(VkQueueFlagBits)1> (this=0x7fffffffd888) at /home/david/Programming/cpp_dev/VkTriangle/src/Devices.cpp:78
++n
++n
++n
++n
++n
++print queue_family_cnt
+$1 = 3
+warning: Error detected on fd 0
+error detected on stdin
+Reading symbols from ./build/main/main...
++break process_input
+Breakpoint 1 at 0x4558: file /home/david/Programming/cpp_dev/VkTriangle/src/Application.cpp, line 42.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/main/main 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffea1ff6c0 (LWP 16387)]
+[New Thread 0x7fffe94be6c0 (LWP 16388)]
+
+Thread 1 "main" hit Breakpoint 1, MyVk::Application::process_input (this=0x7fffffffd888) at /home/david/Programming/cpp_dev/VkTriangle/src/Application.cpp:42
+warning: Source file is more recent than executable.
+warning: Error detected on fd 0
+error detected on stdin
+Reading symbols from ./build/tests/testlib...
++break unit_test
+Breakpoint 1 at 0x555c: file /home/david/Programming/cpp_dev/VkTriangle/src/Application.cpp, line 19.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/tests/testlib 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffe9bff6c0 (LWP 6546)]
+
+Thread 1 "testlib" hit Breakpoint 1, MyVk::Application::unit_test (this=0x7fffffffcf38) at /home/david/Programming/cpp_dev/VkTriangle/src/Application.cpp:19
+warning: Error detected on fd 0
+error detected on stdin
+Reading symbols from ./build/tests/testlib...
++break find_queue_families
+Breakpoint 1 at 0x821f: file /home/david/Programming/cpp_dev/VkTriangle/src/../include/Vk/Application.hpp, line 18.
++run
+Starting program: /home/david/Programming/cpp_dev/VkTriangle/build/tests/testlib 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+[New Thread 0x7fffe9bff6c0 (LWP 4389)]
+
+Thread 1 "testlib" hit Breakpoint 1, MyVk::Application::find_queue_families<(VkQueueFlagBits)1> (this=0x7fffffffcf38) at /home/david/Programming/cpp_dev/VkTriangle/src/../include/Vk/Application.hpp:18

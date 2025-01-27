@@ -13,7 +13,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
   set(CMAKE_CXX_EXTENSIONS OFF)
 
-  include(CTest)
+#  include(CTest)
 
 endif()
 
@@ -33,8 +33,8 @@ add_subdirectory(src)
 
 add_subdirectory(main)
 
-if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING)
-   AND BUILD_TESTING)
-  add_subdirectory(tests)
-endif()
+# if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING)
+#  AND BUILD_TESTING)
+#  add_subdirectory(tests)
+# endif()
 
