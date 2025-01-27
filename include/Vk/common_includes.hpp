@@ -38,12 +38,11 @@ using uInt32_opt = std::optional<uInt32>;
 // NOLINTBEGIN(misc-definitions-in-headers)
 namespace
 {
-const string TITLE{"Triangle"};
+const string TITLE{"My Triangle"};
 const string ENGINE{"No Engine"};
 const uInt32 VK_API_VER{VK_MAKE_API_VERSION(0, 1, 0, 0)};
 const Vec<cStr> validation_layers = {"VK_LAYER_KHRONOS_validation"};
 const Vec<cStr> device_extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-
 } // namespace
 // NOLINTEND(misc-definitions-in-headers)
 #endif // COMMON_HPP

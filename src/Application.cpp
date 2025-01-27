@@ -22,12 +22,15 @@ auto Application::cWindow() -> void
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    GLFWmonitor *monitor{glfwGetPrimaryMonitor()};
-    const GLFWvidmode *mode{glfwGetVideoMode(monitor)};
+    if (fullscreen)
+    {
+        GLFWmonitor *monitor{glfwGetPrimaryMonitor()};
+        const GLFWvidmode *mode{glfwGetVideoMode(monitor)};
+        window.height = mode->height;
+        window.width = mode->width;
+    }
 
-    window.win = glfwCreateWindow(mode->width, mode->height, TITLE.c_str(), nullptr, nullptr);
-    window.height = mode->height;
-    window.width = mode->width;
+    window.win = glfwCreateWindow(window.width, window.height, TITLE.c_str(), nullptr, nullptr);
 
     if (window.win == nullptr)
     {
@@ -59,13 +62,15 @@ auto Application::init_vulkan() -> void
     cLogicalDevice();
     cSwapchain();
     cImageViews();
+	cRenderPass();
     cGraphicsPipeline();
 }
 
 auto Application::clean_up() const noexcept -> void
 {
+    vkDestroyPipeline(logical_device, graphics_pipeline, nullptr);
     vkDestroyPipelineLayout(logical_device, pipeline_layout, nullptr);
-
+    vkDestroyRenderPass(logical_device, render_pass, nullptr);
     std::ranges::for_each(swapchain_image_views.begin(), swapchain_image_views.end(),
                           [this](const auto image_view) { vkDestroyImageView(logical_device, image_view, nullptr); });
 

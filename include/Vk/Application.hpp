@@ -9,8 +9,8 @@ class Application
     struct AppWindow
     {
         GLFWwindow *win{};
-        uInt32 width{800};
-        uInt32 height{600};
+        int width{800};
+        int height{600};
     };
     struct QueueIndices
     {
@@ -35,6 +35,7 @@ class Application
     };
 
   private:
+    bool fullscreen{};
     AppWindow window{};
     VkInstance instance{};
     VkDebugUtilsMessengerEXT debug_messenger{};
@@ -93,7 +94,8 @@ class Application
 
     // ============ GraphicsPipeline defined in Pipeline.cpp =======
     VkPipelineLayout pipeline_layout{};
-    VkRenderPass renderPass{};
+    VkRenderPass render_pass{};
+    VkPipeline graphics_pipeline{};
   
     auto cGraphicsPipeline() -> void;
     auto cShaderModule(const Vec<char> &code) const -> VkShaderModule;
@@ -102,6 +104,12 @@ class Application
   public:
     explicit Application()
     {
+        cWindow();
+        init_vulkan();
+    }
+    explicit Application(bool is_fullscreen)
+    {
+	    fullscreen = is_fullscreen;
         cWindow();
         init_vulkan();
     }
