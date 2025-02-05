@@ -1,7 +1,6 @@
 #include "Vk/Application.hpp"
 #include "Vk/common_includes.hpp"
 
-#include <array>
 namespace MyVk
 {
 auto Application::cSwapchain() -> void
@@ -63,10 +62,34 @@ auto Application::cSwapchain() -> void
     vkGetSwapchainImagesKHR(logical_device, swapchain, &image_cnt, nullptr);
     swapchain_images.resize(image_cnt);
     vkGetSwapchainImagesKHR(logical_device, swapchain, &image_cnt, swapchain_images.data());
-    //     swapchain_extent = extent;
+    swapchain_extent = extent;
     swapchain_image_format = surface_format.format;
 }
+auto Application::cleanup_swapchain() -> void
+{
+    std::ranges::for_each(swapchain_framebuffer.begin(), swapchain_framebuffer.end(),
+                          [this](const auto image_view) { vkDestroyFramebuffer(logical_device, image_view, nullptr); });
 
+    std::ranges::for_each(swapchain_image_views.begin(), swapchain_image_views.end(),
+                          [this](const auto image_view) { vkDestroyImageView(logical_device, image_view, nullptr); });
+    vkDestroySwapchainKHR(logical_device, swapchain, nullptr);
+}
+auto Application::recreateSwapchain() -> void
+{
+    int width{};
+    int height{};
+    glfwGetFramebufferSize(window.win, &width, &height);
+    while (width == 0 || height == 0)
+    {
+        glfwGetFramebufferSize(window.win, &width, &height);
+        glfwWaitEvents();
+    }
+    vkDeviceWaitIdle(logical_device);
+
+    cSwapchain();
+    cImageViews();
+    cFramebuffers();
+}
 auto Application::query_swapchain_support() const noexcept -> SwapChainSupportDetails
 {
     SwapChainSupportDetails details{};
@@ -93,7 +116,6 @@ auto Application::query_swapchain_support() const noexcept -> SwapChainSupportDe
 
     return details;
 }
-
 auto Application::choose_swap_extent(const VkSurfaceCapabilitiesKHR &capabilities) const noexcept -> VkExtent2D
 {
     if (capabilities.currentExtent.width != std::numeric_limits<uInt32>::max())

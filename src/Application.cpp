@@ -1,7 +1,6 @@
 #include "Vk/Application.hpp"
-
-#include <algorithm>
-#include <cstdlib>
+#include "Vk/common_includes.hpp"
+#include <GLFW/glfw3.h>
 
 namespace MyVk
 {
@@ -12,9 +11,10 @@ auto Application::run() noexcept -> void
     {
         esc_to_quit();
         glfwPollEvents();
+        draw_frame();
     }
+    vkDeviceWaitIdle(logical_device);
 }
-
 auto Application::cWindow() -> void
 {
     glfwInit();
@@ -31,13 +31,22 @@ auto Application::cWindow() -> void
     }
 
     window.win = glfwCreateWindow(window.width, window.height, TITLE.c_str(), nullptr, nullptr);
+    glfwSetWindowUserPointer(window.win, this);
+    glfwSetFramebufferSizeCallback(window.win, framebufferResizeCallback);
 
     if (window.win == nullptr)
     {
         throw std::runtime_error("Could not create GLFW window.");
     }
 }
-
+// NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast, bugprone-easily-swappable-parameters)
+auto Application::framebufferResizeCallback(GLFWwindow *window, [[maybe_unused]] int width, [[maybe_unused]] int height)
+    -> void
+{
+    auto *app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
+    app->frame_buffer_resized = true;
+}
+// NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast, bugprone-easily-swappable-parameters)
 auto Application::esc_to_quit() const noexcept -> void
 {
     if (glfwGetKey(window.win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -45,7 +54,6 @@ auto Application::esc_to_quit() const noexcept -> void
         glfwSetWindowShouldClose(window.win, 1);
     }
 }
-
 auto Application::init_vulkan() -> void
 {
     cInstance();
@@ -62,19 +70,31 @@ auto Application::init_vulkan() -> void
     cLogicalDevice();
     cSwapchain();
     cImageViews();
-	cRenderPass();
+    cRenderPass();
     cGraphicsPipeline();
+    cFramebuffers();
+    cCommandPool();
+    cVertexBuffer();
+    cCommandBuffer();
+    cSyncObjects();
 }
-
-auto Application::clean_up() const noexcept -> void
+auto Application::clean_up() noexcept -> void
 {
+    cleanup_swapchain();
+    vkDestroyBuffer(logical_device, vertex_buffer.first, nullptr);
+    vkFreeMemory(logical_device, vertex_buffer.second, nullptr);
     vkDestroyPipeline(logical_device, graphics_pipeline, nullptr);
     vkDestroyPipelineLayout(logical_device, pipeline_layout, nullptr);
     vkDestroyRenderPass(logical_device, render_pass, nullptr);
-    std::ranges::for_each(swapchain_image_views.begin(), swapchain_image_views.end(),
-                          [this](const auto image_view) { vkDestroyImageView(logical_device, image_view, nullptr); });
 
-    vkDestroySwapchainKHR(logical_device, swapchain, nullptr);
+    for (size_t idx = 0; idx < MAX_FRAMES_IN_FLIGHT; idx++)
+    {
+        vkDestroySemaphore(logical_device, image_available_semaphore[idx], nullptr);
+        vkDestroySemaphore(logical_device, render_finished_semaphore[idx], nullptr);
+        vkDestroyFence(logical_device, in_flight_fence[idx], nullptr);
+    }
+
+    vkDestroyCommandPool(logical_device, command_pool, nullptr);
     vkDestroyDevice(logical_device, nullptr);
 
     if (validation_layers_enabled)
@@ -87,7 +107,6 @@ auto Application::clean_up() const noexcept -> void
     glfwDestroyWindow(window.win);
     glfwTerminate();
 }
-
 auto Application::cInstance() -> void
 {
     if (validation_layers_enabled && !MyVk::Application::check_validation_layer_support())

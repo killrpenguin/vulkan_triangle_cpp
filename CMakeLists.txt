@@ -12,10 +12,18 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
   set(CMAKE_CXX_EXTENSIONS OFF)
-
 #  include(CTest)
 
 endif()
+
+# include(FetchContent)
+# FetchContent_Declare(
+#     fetch_vk_bootstrap
+#     GIT_REPOSITORY https://github.com/charles-lunarg/vk-bootstrap
+#     GIT_TAG        1701071aba84befb0fadbde51f17240e8b3b2a6c
+# )
+
+# FetchContent_MakeAvailable(fetch_vk_bootstrap)
 
 find_package(glfw3 REQUIRED)
 

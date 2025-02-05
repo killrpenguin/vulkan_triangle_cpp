@@ -59,14 +59,24 @@ auto Application::cRenderPass() -> void
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &color_attachment_ref;
 
-    VkRenderPassCreateInfo renderPassInfo{};
-    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    renderPassInfo.attachmentCount = 1;
-    renderPassInfo.pAttachments = &color_attachment;
-    renderPassInfo.subpassCount = 1;
-    renderPassInfo.pSubpasses = &subpass;
+    VkSubpassDependency dependency{};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
-    if (vkCreateRenderPass(logical_device, &renderPassInfo, nullptr, &render_pass) != VK_SUCCESS)
+    VkRenderPassCreateInfo render_pass_info{};
+    render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    render_pass_info.attachmentCount = 1;
+    render_pass_info.pAttachments = &color_attachment;
+    render_pass_info.subpassCount = 1;
+    render_pass_info.pSubpasses = &subpass;
+    render_pass_info.dependencyCount = 1;
+    render_pass_info.pDependencies = &dependency;
+
+    if (vkCreateRenderPass(logical_device, &render_pass_info, nullptr, &render_pass) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create render pass.");
     }
@@ -89,8 +99,11 @@ auto Application::cGraphicsPipeline() -> void
     frag_shader_stage_info.module = frag_module;
     frag_shader_stage_info.pName = "main";
 
-    [[maybe_unused]] Array<VkPipelineShaderStageCreateInfo, 2> shader_stages{vert_shader_stage_info,
-                                                                             frag_shader_stage_info};
+    Array<VkPipelineShaderStageCreateInfo, 2> shader_stages{vert_shader_stage_info, frag_shader_stage_info};
+
+    [[maybe_unused]] const VkVertexInputBindingDescription binding_descrpition{Vertex::get_binding_description()};
+    [[maybe_unused]] const Array<VkVertexInputAttributeDescription, 2> attribute_description{
+        Vertex::get_attribute_description()};
 
     Vec<VkDynamicState> dynamic_states = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
 
@@ -101,8 +114,10 @@ auto Application::cGraphicsPipeline() -> void
 
     VkPipelineVertexInputStateCreateInfo vertex_input_info{};
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertex_input_info.vertexBindingDescriptionCount = 0;
-    vertex_input_info.vertexAttributeDescriptionCount = 0;
+    vertex_input_info.vertexBindingDescriptionCount = 1;
+    vertex_input_info.vertexAttributeDescriptionCount = static_cast<uInt32>(attribute_description.size());
+    vertex_input_info.pVertexBindingDescriptions = &binding_descrpition;
+    vertex_input_info.pVertexAttributeDescriptions = attribute_description.data();
 
     VkPipelineInputAssemblyStateCreateInfo input_assembly{};
     input_assembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -174,10 +189,8 @@ auto Application::cGraphicsPipeline() -> void
 
     VkPipelineLayoutCreateInfo pipeline_layout_info{};
     pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipeline_layout_info.setLayoutCount = 0;            // Optional
-    pipeline_layout_info.pSetLayouts = nullptr;         // Optional
-    pipeline_layout_info.pushConstantRangeCount = 0;    // Optional
-    pipeline_layout_info.pPushConstantRanges = nullptr; // Optional
+    pipeline_layout_info.setLayoutCount = 0;
+    pipeline_layout_info.pushConstantRangeCount = 0;
 
     if (vkCreatePipelineLayout(logical_device, &pipeline_layout_info, nullptr, &pipeline_layout) != VK_SUCCESS)
     {
@@ -196,7 +209,6 @@ auto Application::cGraphicsPipeline() -> void
     pipeline_info.pDepthStencilState = nullptr; // Optional
     pipeline_info.pColorBlendState = &color_blending;
     pipeline_info.pDynamicState = &dynamic_state;
-
     pipeline_info.layout = pipeline_layout;
     pipeline_info.renderPass = render_pass;
     pipeline_info.subpass = 0;

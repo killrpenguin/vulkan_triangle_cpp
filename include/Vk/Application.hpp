@@ -1,5 +1,6 @@
 #pragma once
 #include "Vk/common_includes.hpp"
+#include <vulkan/vulkan_core.h>
 
 namespace MyVk
 {
@@ -40,12 +41,15 @@ class Application
     VkInstance instance{};
     VkDebugUtilsMessengerEXT debug_messenger{};
     ShaderCode shader_code{};
+    size_t current_frame{};
+    bool frame_buffer_resized{};
 
     auto cWindow() -> void;
     auto init_vulkan() -> void;
     auto cInstance() -> void;
     auto esc_to_quit() const noexcept -> void;
-    auto clean_up() const noexcept -> void;
+    auto clean_up() noexcept -> void;
+    auto draw_frame() -> void;
 
     // ============ Validation Layers defined in Layers.cpp =======
     auto static check_validation_layer_support() -> bool;
@@ -55,13 +59,16 @@ class Application
     auto static CreateDebugUtilsMessengerEXT(VkInstance instance,
 											 const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                              VkDebugUtilsMessengerEXT *pDebugMessenger) -> VkResult;
-    // clang-format on  
+
     auto static DestroyDebugUtilsMessengerEXT(VkInstance instance,
 											  VkDebugUtilsMessengerEXT debugMessenger) -> void;
-    auto static debug_callback([[maybe_unused]] VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                               [[maybe_unused]] VkDebugUtilsMessageTypeFlagsEXT messageType,
-                               [[maybe_unused]] const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-                               [[maybe_unused]] void *pUserData) -> VKAPI_ATTR VkBool32 VKAPI_CALL;
+  
+    auto static debug_callback( VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                                VkDebugUtilsMessageTypeFlagsEXT messageType,
+                                const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+                                void *pUserData) -> VKAPI_ATTR VkBool32 VKAPI_CALL;
+    // clang-format on    
+    auto static framebufferResizeCallback(GLFWwindow* window, int width, int height) -> void;
   
     // ============ Devices and Queues defined in Devices.cpp =======
     VkPhysicalDevice physical_device{VK_NULL_HANDLE};
@@ -84,6 +91,8 @@ class Application
     VkExtent2D swapchain_extent{};
 
     auto cSwapchain() -> void;
+    auto recreateSwapchain() -> void;
+    auto cleanup_swapchain() -> void;
     auto cImageViews() -> void;
     auto query_swapchain_support() const noexcept -> SwapChainSupportDetails;
     auto static choose_swap_surface_format(const Vec<VkSurfaceFormatKHR> &available_formats) noexcept
@@ -100,6 +109,29 @@ class Application
     auto cGraphicsPipeline() -> void;
     auto cShaderModule(const Vec<char> &code) const -> VkShaderModule;
     auto cRenderPass() -> void;
+
+  // ============ Buffers and Drawing defined in Drawing.cpp =======
+  Vec<VkFramebuffer> swapchain_framebuffer{};
+  VkCommandPool command_pool{};
+  Vec<VkCommandBuffer> command_buffer{};
+  Vec<VkSemaphore> image_available_semaphore{};
+  Vec<VkSemaphore> render_finished_semaphore{};
+  Vec<VkFence> in_flight_fence{};
+  Buffer vertex_buffer{};
+  
+  auto cVertexBuffer() -> void;
+  auto find_mem_type(const uInt32 type_filter, const VkMemoryPropertyFlags properties) const -> uInt32;
+  auto cFramebuffers() -> void;
+  auto cCommandPool() -> void;
+  auto cCommandBuffer() -> void;
+  auto record_command_buffer(const VkCommandBuffer buffer, const uInt32 image_index);
+  auto cBuffer(const VkDeviceSize size, const VkBufferUsageFlags usage,
+													 const VkMemoryPropertyFlags properties, Buffer& buffer) -> void;
+
+  auto copy_buffer(const VkBuffer src, const VkBuffer dst, const VkDeviceSize
+				   size) const noexcept -> void;
+
+  auto cSyncObjects() -> void;
 
   public:
     explicit Application()
