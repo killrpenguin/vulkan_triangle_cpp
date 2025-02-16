@@ -33,7 +33,7 @@ using string = std::string;
 using cStr = const char *;
 using uInt32 = uint32_t;
 using uInt32_opt = std::optional<uInt32>;
-
+using uInt16 = uint16_t;
 #ifdef NDEBUG
 [[maybe_unused]] const bool validation_layers_enabled{false};
 #else
@@ -50,6 +50,12 @@ struct Vertex
     static auto get_binding_description() -> VkVertexInputBindingDescription;
     static auto get_attribute_description() -> Array<VkVertexInputAttributeDescription, 2>;
 };
+struct UniformBufferObject
+{
+    glm::mat4 model;
+    glm::mat4 view;
+    glm::mat4 proj;
+};
 } // namespace MyVk
   //
 // NOLINTBEGIN(misc-definitions-in-headers)
@@ -62,11 +68,14 @@ const Vec<cStr> validation_layers = {"VK_LAYER_KHRONOS_validation"};
 const Vec<cStr> device_extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 const int MAX_FRAMES_IN_FLIGHT{2};
 const glm::vec3 ColorIncrement{0.01F, 0.01F, 0.01F};
+// clang-format off
 const Vec<MyVk::Vertex> vertices = {
-    // clang-format off
-    {{0.0F, -0.5F}, {1.0F, 1.0F, 0.0F}},
-    {{0.5F, 0.5F }, {0.0F, 1.0F, 0.0F}},
-    {{-0.5F, 0.5F}, {0.0F, 0.0F, 1.0F}}};
+    {{-0.5F, -0.5F}, {1.0F, 0.0F, 0.0F}},
+    {{0.5F, -0.5F}, {0.0F, 1.0F, 0.0F}},
+    {{0.5F, 0.5F}, {0.0F, 0.0F, 1.0F}},
+    {{-0.5F, 0.5F}, {1.0F, 1.0F, 1.0F}}
+};
+const std::vector<uInt16> indices = {0, 1, 2, 2, 3, 0};
 // clang-format on
 
 } // namespace

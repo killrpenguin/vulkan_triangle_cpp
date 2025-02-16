@@ -134,31 +134,35 @@ auto Application::cLogicalDevice() -> void
     Vec<VkDeviceQueueCreateInfo> queue_create_info_list{};
     for (uInt32 queue_indices : unique_queue_families)
     {
-        VkDeviceQueueCreateInfo queue_create_info{};
-        queue_create_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-        queue_create_info.queueFamilyIndex = queue_indices; // must be less than queuefamily propertycount
-        queue_create_info.queueCount = 1;
-        queue_create_info.pQueuePriorities = &queue_priority;
+        const VkDeviceQueueCreateInfo queue_create_info{
+            .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .queueFamilyIndex = queue_indices, // must be less than queuefamily propertycount
+            .queueCount = 1,
+            .pQueuePriorities = &queue_priority,
+        };
         queue_create_info_list.push_back(queue_create_info);
     }
     VkPhysicalDeviceFeatures device_features{};
 
-    VkDeviceCreateInfo create_info{};
-    create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    create_info.queueCreateInfoCount = static_cast<uInt32>(queue_create_info_list.size());
-    create_info.pQueueCreateInfos = queue_create_info_list.data();
-    create_info.pEnabledFeatures = &device_features;
-    create_info.enabledExtensionCount = static_cast<uInt32>(device_extensions.size());
-    create_info.ppEnabledExtensionNames = device_extensions.data();
+    VkDeviceCreateInfo create_info{
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+		.pNext = nullptr,
+		.flags = 0,
+        .queueCreateInfoCount = static_cast<uInt32>(queue_create_info_list.size()),
+        .pQueueCreateInfos = queue_create_info_list.data(),
+		.enabledLayerCount = 0,
+		.ppEnabledLayerNames = nullptr,
+        .enabledExtensionCount = static_cast<uInt32>(device_extensions.size()),
+        .ppEnabledExtensionNames = device_extensions.data(),
+        .pEnabledFeatures = &device_features,
+    };
 
     if (validation_layers_enabled)
     {
         create_info.enabledLayerCount = static_cast<uint32_t>(validation_layers.size());
         create_info.ppEnabledLayerNames = validation_layers.data();
-    }
-    else
-    {
-        create_info.enabledLayerCount = 0;
     }
 
     if (vkCreateDevice(physical_device, &create_info, nullptr, &logical_device) != VK_SUCCESS)

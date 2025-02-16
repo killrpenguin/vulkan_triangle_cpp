@@ -1,11 +1,10 @@
 #include "Vk/Application.hpp"
 #include "Vk/common_includes.hpp"
-#include <GLFW/glfw3.h>
 
 namespace MyVk
 {
 
-auto Application::run() noexcept -> void
+auto Application::triangle() noexcept -> void
 {
     while (glfwWindowShouldClose(window.win) == 0)
     {
@@ -71,21 +70,29 @@ auto Application::init_vulkan() -> void
     cSwapchain();
     cImageViews();
     cRenderPass();
+    cDescriptorSetLayout();
     cGraphicsPipeline();
     cFramebuffers();
     cCommandPool();
     cVertexBuffer();
+    cIndexBuffer();
     cCommandBuffer();
     cSyncObjects();
 }
 auto Application::clean_up() noexcept -> void
 {
     cleanup_swapchain();
-    vkDestroyBuffer(logical_device, vertex_buffer.first, nullptr);
-    vkFreeMemory(logical_device, vertex_buffer.second, nullptr);
+
     vkDestroyPipeline(logical_device, graphics_pipeline, nullptr);
     vkDestroyPipelineLayout(logical_device, pipeline_layout, nullptr);
     vkDestroyRenderPass(logical_device, render_pass, nullptr);
+
+    vkDestroyBuffer(logical_device, index_buffer.first, nullptr);
+    vkFreeMemory(logical_device, index_buffer.second, nullptr);
+    vkDestroyBuffer(logical_device, vertex_buffer.first, nullptr);
+    vkFreeMemory(logical_device, vertex_buffer.second, nullptr);
+
+    vkDestroyDescriptorSetLayout(logical_device, descriptor_set_layout, nullptr);
 
     for (size_t idx = 0; idx < MAX_FRAMES_IN_FLIGHT; idx++)
     {

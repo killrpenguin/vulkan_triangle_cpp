@@ -1,5 +1,6 @@
 #include "Vk/Application.hpp"
 #include "Vk/common_includes.hpp"
+#include <vulkan/vulkan_core.h>
 
 namespace MyVk
 {
@@ -14,11 +15,11 @@ auto Application::cSwapchain() -> void
             ? indices.present_indice.value()
             : throw std::runtime_error("Failed to find present indices in queue family.")};
 
-    SwapChainSupportDetails swapchain_support = query_swapchain_support();
+    const SwapChainSupportDetails swapchain_support = query_swapchain_support();
 
-    VkSurfaceFormatKHR surface_format{choose_swap_surface_format(swapchain_support.formats)};
-    VkPresentModeKHR present_mode{choose_swap_present_mode(swapchain_support.present_modes)};
-    VkExtent2D extent{choose_swap_extent(swapchain_support.capabilities)};
+    const VkSurfaceFormatKHR surface_format{choose_swap_surface_format(swapchain_support.formats)};
+    const VkPresentModeKHR present_mode{choose_swap_present_mode(swapchain_support.present_modes)};
+    const VkExtent2D extent{choose_swap_extent(swapchain_support.capabilities)};
 
     uInt32 image_cnt{swapchain_support.capabilities.minImageCount + 1};
     if (swapchain_support.capabilities.maxImageCount > 0 && image_cnt > swapchain_support.capabilities.maxImageCount)
@@ -28,6 +29,8 @@ auto Application::cSwapchain() -> void
 
     VkSwapchainCreateInfoKHR create_info{};
     create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    create_info.pNext = nullptr;
+    create_info.flags = 0;
     create_info.surface = surface;
     create_info.minImageCount = image_cnt;
     create_info.imageFormat = surface_format.format;
@@ -171,22 +174,27 @@ auto Application::cImageViews() -> void
 
     for (unsigned long idx{0}; idx < swapchain_images.size(); idx++)
     {
-        VkImageViewCreateInfo create_info{};
-        create_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        create_info.image = swapchain_images[idx];
-        create_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        create_info.format = swapchain_image_format;
+        const VkImageViewCreateInfo create_info{.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+												.pNext = nullptr,
+												.flags = 0,
+                                                .image = swapchain_images[idx],
+                                                .viewType = VK_IMAGE_VIEW_TYPE_2D,
+                                                .format = swapchain_image_format,
+                                                .components = {.r = VK_COMPONENT_SWIZZLE_IDENTITY,
+                                                               .g = VK_COMPONENT_SWIZZLE_IDENTITY,
+                                                               .b = VK_COMPONENT_SWIZZLE_IDENTITY,
+                                                               .a = VK_COMPONENT_SWIZZLE_IDENTITY},
+                                                .subresourceRange =
+                                                    {
+                                                        .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                                                        .baseMipLevel = 0,
+                                                        .levelCount = 1,
+                                                        .baseArrayLayer = 0,
+                                                        .layerCount = 1,
+                                                    }
 
-        create_info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-        create_info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-        create_info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-        create_info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+        };
 
-        create_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        create_info.subresourceRange.baseMipLevel = 0;
-        create_info.subresourceRange.levelCount = 1;
-        create_info.subresourceRange.baseArrayLayer = 0;
-        create_info.subresourceRange.layerCount = 1;
         if (vkCreateImageView(logical_device, &create_info, nullptr, &swapchain_image_views[idx]) != VK_SUCCESS)
         {
             throw std::runtime_error("Failed to create image views.");

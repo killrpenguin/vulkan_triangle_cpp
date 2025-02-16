@@ -1,6 +1,5 @@
 #pragma once
 #include "Vk/common_includes.hpp"
-#include <vulkan/vulkan_core.h>
 
 namespace MyVk
 {
@@ -56,14 +55,14 @@ class Application
     auto setup_debug_messenger() -> void;
     auto static get_required_extensions() -> Vec<cStr>;
     // clang-format off
-    auto static CreateDebugUtilsMessengerEXT(VkInstance instance,
+    [[nodiscard]] auto static CreateDebugUtilsMessengerEXT(VkInstance instance,
 											 const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                              VkDebugUtilsMessengerEXT *pDebugMessenger) -> VkResult;
 
     auto static DestroyDebugUtilsMessengerEXT(VkInstance instance,
 											  VkDebugUtilsMessengerEXT debugMessenger) -> void;
-  
-    auto static debug_callback( VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+   
+    [[nodiscard]] auto static debug_callback( VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                                 VkDebugUtilsMessageTypeFlagsEXT messageType,
                                 const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                 void *pUserData) -> VKAPI_ATTR VkBool32 VKAPI_CALL;
@@ -78,9 +77,9 @@ class Application
 
     auto cPhysicalDevice() -> void;
     auto cLogicalDevice() -> void;
-    auto static find_device(const Vec<VkPhysicalDevice> &devices) noexcept -> VkPhysicalDevice;
+    [[nodiscard]] auto static find_device(const Vec<VkPhysicalDevice> &devices) noexcept -> VkPhysicalDevice;
     auto check_device_exts_support() const noexcept -> bool;
-    template <VkQueueFlagBits queue_flag> auto find_queue_families() const noexcept -> QueueIndices;
+    template <VkQueueFlagBits queue_flag> [[nodiscard]] auto find_queue_families() const noexcept -> QueueIndices;
 
     // ============ Surface and Swapchain/Images defined in Swapchain.cpp =======
     VkSurfaceKHR surface{};
@@ -95,19 +94,20 @@ class Application
     auto cleanup_swapchain() -> void;
     auto cImageViews() -> void;
     auto query_swapchain_support() const noexcept -> SwapChainSupportDetails;
-    auto static choose_swap_surface_format(const Vec<VkSurfaceFormatKHR> &available_formats) noexcept
+    [[nodiscard]] auto static choose_swap_surface_format(const Vec<VkSurfaceFormatKHR> &available_formats) noexcept
         -> VkSurfaceFormatKHR;
-    auto static choose_swap_present_mode(const Vec<VkPresentModeKHR> &available_presepent_modes) noexcept
+    [[nodiscard]] auto static choose_swap_present_mode(const Vec<VkPresentModeKHR> &available_presepent_modes) noexcept
         -> VkPresentModeKHR;
-    auto choose_swap_extent(const VkSurfaceCapabilitiesKHR &capabilities) const noexcept -> VkExtent2D;
+    [[nodiscard]] auto choose_swap_extent(const VkSurfaceCapabilitiesKHR &capabilities) const noexcept -> VkExtent2D;
 
     // ============ GraphicsPipeline defined in Pipeline.cpp =======
     VkPipelineLayout pipeline_layout{};
+    VkDescriptorSetLayout descriptor_set_layout{};
     VkRenderPass render_pass{};
     VkPipeline graphics_pipeline{};
   
     auto cGraphicsPipeline() -> void;
-    auto cShaderModule(const Vec<char> &code) const -> VkShaderModule;
+    [[nodiscard]] auto cShaderModule(const Vec<char> &code) const -> VkShaderModule;
     auto cRenderPass() -> void;
 
   // ============ Buffers and Drawing defined in Drawing.cpp =======
@@ -118,20 +118,22 @@ class Application
   Vec<VkSemaphore> render_finished_semaphore{};
   Vec<VkFence> in_flight_fence{};
   Buffer vertex_buffer{};
-  
+  Buffer index_buffer{};
+  Vec<Buffer> uniform_buffers{};
+
+  auto cIndexBuffer() -> void;  
   auto cVertexBuffer() -> void;
-  auto find_mem_type(const uInt32 type_filter, const VkMemoryPropertyFlags properties) const -> uInt32;
+  [[nodiscard]] auto find_mem_type(const uInt32 type_filter, const VkMemoryPropertyFlags properties) const -> uInt32;
   auto cFramebuffers() -> void;
   auto cCommandPool() -> void;
   auto cCommandBuffer() -> void;
-  auto record_command_buffer(const VkCommandBuffer buffer, const uInt32 image_index);
+  auto record_command_buffer(const VkCommandBuffer buffer, const uInt32 image_index) -> void;
   auto cBuffer(const VkDeviceSize size, const VkBufferUsageFlags usage,
 													 const VkMemoryPropertyFlags properties, Buffer& buffer) -> void;
-
   auto copy_buffer(const VkBuffer src, const VkBuffer dst, const VkDeviceSize
 				   size) const noexcept -> void;
-
   auto cSyncObjects() -> void;
+  auto cDescriptorSetLayout() -> void;
 
   public:
     explicit Application()
@@ -155,8 +157,8 @@ class Application
     Application(Application &&other) noexcept = default;
     auto operator=(Application &&other) noexcept -> Application & = default;
 
-    auto run() noexcept -> void;
-    auto static readShader(const std::string &file_name) -> Vec<char>;
+    auto triangle() noexcept -> void;
+    [[nodiscard]] auto static readShader(const std::string &file_name) -> Vec<char>;
 };
 
 } // namespace MyVk

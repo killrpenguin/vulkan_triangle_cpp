@@ -5,12 +5,19 @@
 #include <iostream>
 #include <stdexcept>
 
-auto main() -> int
+auto main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv[]) -> int
 {
     try
     {
         MyVk::Application app{};
-        app.run();
+        if (argc > 1)
+        {
+        }
+        else
+        {
+            app.triangle();
+        }
+
         return EXIT_SUCCESS;
     }
     catch (const std::runtime_error &err)
